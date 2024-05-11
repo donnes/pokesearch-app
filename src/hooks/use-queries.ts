@@ -1,7 +1,8 @@
 import { env } from "@/env.mjs";
-import { type UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
 
+import { extractOffsetFromUrl } from "@/lib/utils";
 import type { Pokemon } from "@/schemas/pokemon";
 import type { NamedAPIResourceList } from "@/schemas/shared";
 
@@ -14,14 +15,15 @@ export const queryKeys = {
   getPokemons: "get-pokemons",
 };
 
-export function useGetPokemonsQuery(
-  search: string | null,
-  options?: UseQueryOptions<NamedAPIResourceList>
-) {
-  async function queryFn(): Promise<NamedAPIResourceList> {
+export function useGetPokemonsQuery(search: string | null) {
+  async function queryFn({
+    pageParam = 0,
+  }: {
+    pageParam: number;
+  }): Promise<NamedAPIResourceList> {
     if (!search) {
       const { data } = await api.get<NamedAPIResourceList>(
-        "/pokemon/?limit=12"
+        `/pokemon/?limit=12&offset=${pageParam}`
       );
       return data;
     }
@@ -40,9 +42,11 @@ export function useGetPokemonsQuery(
     };
   }
 
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: [queryKeys.getPokemons, search],
     queryFn,
-    ...options,
+    initialPageParam: 0,
+    getPreviousPageParam: ({ previous }) => extractOffsetFromUrl(previous),
+    getNextPageParam: ({ next }) => extractOffsetFromUrl(next),
   });
 }
