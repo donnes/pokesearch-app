@@ -1,25 +1,12 @@
 import Image from "next/image";
 
-import { DotPattern } from "@/components/patterns/dot-pattern";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col max-w-4xl py-24 mx-auto">
-      <DotPattern
-        width={20}
-        height={20}
-        cx={1}
-        cy={1}
-        cr={1}
-        className={cn(
-          "[mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)]",
-        )}
-      />
-
+    <div>
       <div className="flex items-center justify-between">
         <Image src="/logo.png" width={204.8} height={63.8} alt="PokeSearch" />
       </div>
@@ -31,6 +18,6 @@ export default function Home() {
           Search
         </Button>
       </div>
-    </main>
+    </div>
   );
 }
