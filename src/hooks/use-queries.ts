@@ -1,5 +1,5 @@
 import { env } from "@/env.mjs";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import axios, { type AxiosError } from "axios";
 
 import { extractOffsetFromUrl } from "@/lib/utils";
@@ -13,6 +13,7 @@ export const api = axios.create({
 
 export const queryKeys = {
   getPokemons: "get-pokemons",
+  getPokemon: "get-pokemon",
 };
 
 export function useGetPokemonsQuery(search: string | null) {
@@ -51,5 +52,17 @@ export function useGetPokemonsQuery(search: string | null) {
     getPreviousPageParam: ({ previous }) => extractOffsetFromUrl(previous),
     getNextPageParam: ({ next }) => extractOffsetFromUrl(next),
     retry: false,
+  });
+}
+
+export function useGetPokemonQuery(id: number) {
+  async function queryFn() {
+    const { data } = await api.get<Pokemon>(`/pokemon/${id}/`);
+    return data;
+  }
+
+  return useQuery({
+    queryKey: [queryKeys.getPokemon, id],
+    queryFn,
   });
 }
