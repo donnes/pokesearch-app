@@ -1,22 +1,52 @@
-import Image from "next/image";
+"use client";
 
+import { Star } from "lucide-react";
+import Image from "next/image";
+import { useQueryState } from "nuqs";
+
+import { PokemonListItem } from "@/components/composed/pokemon-list-item";
+import { SearchBar } from "@/components/composed/search-bar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+
+function SearchNotFound() {
+  return (
+    <div className="flex flex-col items-center justify-center mt-8 gap-y-4">
+      <Image
+        src="/not-found-pikachu.png"
+        className="w-40 ml-10"
+        width={430}
+        height={463}
+        alt="Pokémon name not found"
+      />
+      <p className="font-medium text-zinc-400">
+        Pokémon name not found, check your spelling.
+      </p>
+    </div>
+  );
+}
 
 export default function Home() {
+  const [search] = useQueryState("search");
+
+  console.log(search);
+
   return (
     <div>
       <div className="flex items-center justify-between">
         <Image src="/logo.png" width={204.8} height={63.8} alt="PokeSearch" />
+
+        <Button variant="ghost">
+          <Star className="w-5 h-5 mr-2 text-yellow-400 fill-yellow-400" />
+          Favorites
+        </Button>
       </div>
 
-      <div className="relative mt-4">
-        <Search className="absolute w-6 h-6 left-4 top-2/4 -translate-y-2/4 text-zinc-400" />
-        <Input placeholder="Search" className="pr-24 pl-14" />
-        <Button className="absolute right-2 top-2/4 -translate-y-2/4">
-          Search
-        </Button>
+      <SearchBar />
+
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <PokemonListItem />
+        <PokemonListItem />
+        <PokemonListItem />
       </div>
     </div>
   );
