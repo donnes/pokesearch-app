@@ -1,6 +1,6 @@
 import { env } from "@/env.mjs";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { type AxiosError } from "axios";
 
 import { extractOffsetFromUrl } from "@/lib/utils";
 import type { Pokemon } from "@/schemas/pokemon";
@@ -17,18 +17,20 @@ export const queryKeys = {
 
 export function useGetPokemonsQuery(search: string | null) {
   async function queryFn({
-    pageParam = 0,
+    pageParam,
   }: {
-    pageParam: number;
+    pageParam: unknown;
   }): Promise<NamedAPIResourceList> {
+    const offset = typeof pageParam === "number" ? pageParam : 0;
+
     if (!search) {
       const { data } = await api.get<NamedAPIResourceList>(
-        `/pokemon/?limit=12&offset=${pageParam}`
+        `/pokemon/?limit=12&offset=${offset}`
       );
       return data;
     }
 
-    const { data } = await api.get<Pokemon>(`/pokemon/${search}`);
+    const { data } = await api.get<Pokemon>(`/pokemon/${search.toLowerCase()}`);
     return {
       count: 1,
       next: null,
@@ -36,17 +38,18 @@ export function useGetPokemonsQuery(search: string | null) {
       results: [
         {
           name: data.name,
-          url: `${env.NEXT_PUBLIC_API_URL}/pokemon/${data.id}`,
+          url: `${env.NEXT_PUBLIC_API_URL}/pokemon/${data.id}/`,
         },
       ],
     };
   }
 
-  return useInfiniteQuery({
+  return useInfiniteQuery<NamedAPIResourceList, AxiosError>({
     queryKey: [queryKeys.getPokemons, search],
     queryFn,
     initialPageParam: 0,
     getPreviousPageParam: ({ previous }) => extractOffsetFromUrl(previous),
     getNextPageParam: ({ next }) => extractOffsetFromUrl(next),
+    retry: false,
   });
 }
