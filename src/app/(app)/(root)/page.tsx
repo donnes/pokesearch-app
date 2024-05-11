@@ -7,6 +7,7 @@ import { useQueryState } from "nuqs";
 import { PokemonListItem } from "@/components/composed/pokemon-list-item";
 import { SearchBar } from "@/components/composed/search-bar";
 import { Button } from "@/components/ui/button";
+import { useGetPokemonsQuery } from "@/hooks/use-queries";
 
 function SearchNotFound() {
   return (
@@ -28,7 +29,7 @@ function SearchNotFound() {
 export default function Home() {
   const [search] = useQueryState("search");
 
-  console.log(search);
+  const { data, isLoading } = useGetPokemonsQuery(search);
 
   return (
     <div>
@@ -43,11 +44,15 @@ export default function Home() {
 
       <SearchBar />
 
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <PokemonListItem />
-        <PokemonListItem />
-        <PokemonListItem />
-      </div>
+      {isLoading && <div>Loading...</div>}
+
+      {!isLoading && data && (
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {data.results.map((pokemon) => (
+            <PokemonListItem key={pokemon.name} pokemon={pokemon} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
