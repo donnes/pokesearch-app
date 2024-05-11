@@ -7,6 +7,8 @@ export const NamedAPIResourceSchema = z.object({
   url: z.string(),
 });
 
+export type NamedAPIResource = z.infer<typeof NamedAPIResourceSchema>;
+
 export const NameSchema = z.object({
   /** The localized name for an API resource in a specific language. */
   name: z.string(),
@@ -18,12 +20,14 @@ export const NamedAPIResourceListSchema = z.object({
   /** The total number of resources available from this API. */
   count: z.number(),
   /** The URL for the next page in the list. */
-  next: z.string(),
+  next: z.string().nullable(),
   /** The URL for the previous page in the list. */
-  previous: z.string(),
+  previous: z.string().nullable(),
   /** A list of named API resources. */
   results: z.array(NamedAPIResourceSchema),
 });
+
+export type NamedAPIResourceList = z.infer<typeof NamedAPIResourceListSchema>;
 
 export const LanguageSchema = z.object({
   /** The identifier for this resource. */

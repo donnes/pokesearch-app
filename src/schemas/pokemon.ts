@@ -296,4 +296,4 @@ export const PokemonSchema = z.object({
   types: z.array(PokemonTypeSchema),
 });
 
-export type PokemonSchema = z.infer<typeof PokemonSchema>;
+export type Pokemon = z.infer<typeof PokemonSchema>;
