@@ -80,12 +80,12 @@ export function useGetFavoritesQuery() {
   });
 }
 
-export function useGetFavoriteQuery(name?: string) {
+export function useGetFavoriteQuery(name: string) {
   const { favorites } = useFavoriteStore();
 
-  return useQuery<NamedAPIResource | undefined>({
+  return useQuery<NamedAPIResource | null>({
     queryKey: [queryKeys.getFavorite, name],
-    queryFn: () => favorites.find((pokemon) => pokemon.name === name),
+    queryFn: () => favorites.find((pokemon) => pokemon.name === name) || null,
     enabled: !!name,
   });
 }
