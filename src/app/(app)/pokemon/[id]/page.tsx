@@ -1,61 +1,19 @@
 "use client";
 
-import {
-  ChevronLeft,
-  RulerIcon,
-  StarIcon,
-  StarOffIcon,
-  WeightIcon,
-} from "lucide-react";
+import { ChevronLeft, RulerIcon, WeightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import * as React from "react";
 
+import { FavoriteButton } from "@/components/composed/favorite-button";
 import { PokeballLoading } from "@/components/composed/pokeball-loading";
 import { StatsIcon } from "@/components/composed/stats-icon";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress, type ProgressProps } from "@/components/ui/progress";
-import { env } from "@/env.mjs";
-import { useToggleFavoriteMutation } from "@/hooks/use-mutations";
-import { useGetFavoriteQuery, useGetPokemonQuery } from "@/hooks/use-queries";
+import { useGetPokemonQuery } from "@/hooks/use-queries";
 import { cn } from "@/lib/utils";
-import type { Pokemon } from "@/schemas/pokemon";
-
-function FavoriteButton({ pokemon }: { pokemon: Pokemon }) {
-  const { data: favorite } = useGetFavoriteQuery(pokemon.name);
-  const { mutate } = useToggleFavoriteMutation();
-
-  const onClick = React.useCallback(() => {
-    mutate({
-      name: pokemon.name,
-      url: `${env.NEXT_PUBLIC_API_URL}/pokemon/${pokemon.id}/`,
-    });
-  }, [pokemon, mutate]);
-
-  return (
-    <Button
-      variant="ghost"
-      className={cn("group", {
-        "text-yellow-400": !!favorite,
-      })}
-      onClick={onClick}
-    >
-      <StarIcon
-        className={cn("w-5 h-5 mr-2", {
-          "fill-yellow-400 group-hover:hidden": !!favorite,
-        })}
-      />
-      <StarOffIcon
-        className={cn("hidden w-5 h-5 mr-2 fill-yellow-400", {
-          "group-hover:inline-flex": !!favorite,
-        })}
-      />
-      Favorite
-    </Button>
-  );
-}
 
 export default function PokemonPage() {
   const { id } = useParams<{ id: string }>();
@@ -84,7 +42,12 @@ export default function PokemonPage() {
           </Link>
         </Button>
 
-        <FavoriteButton pokemon={pokemon} />
+        <FavoriteButton
+          pokemon={{
+            name: pokemon.name,
+            url: `/pokemon/${pokemon.id}/`,
+          }}
+        />
       </div>
 
       <div className="pt-4 flex items-center">
