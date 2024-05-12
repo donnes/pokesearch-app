@@ -88,7 +88,9 @@ export default function PokemonPage() {
       </div>
 
       <div className="pt-4 flex items-center">
-        <h1 className="font-bold text-4xl leading-tight">Bulbasaur</h1>
+        <h1 className="font-bold text-4xl leading-tight capitalize">
+          {pokemon.name}
+        </h1>
 
         <div className="flex items-center gap-x-2 pl-4">
           {pokemon.types.map((type) => (
