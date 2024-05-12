@@ -15,8 +15,9 @@ PokeSearch is a web application that allows users to search for Pokemons and the
 - [Zustand](https://github.com/pmndrs/zustand)
 - [Shadcn UI](https://ui.shadcn.com)
 - [Zod](https://zod.dev)
+- [nuqs](https://github.com/47ng/nuqs/)
 - [TailwindCSS](https://tailwindcss.com/)
-- [Cypress](https://cypress.io/)
+- [Playwright](https://playwright.dev/)
 - [Bun](https://bun.sh/)
 
 ## Architecture Overview
@@ -31,7 +32,9 @@ To be as close as possible to a real-world application, I have made architectura
 ### State Management
 
 - **Zustand**: Utilized for global state management. Zustand offers a straightforward setup compared to Redux, making it the ideal choice. The primary use case in this project is to manage favorites, with the added functionality of persisting these favorites in `localStorage`.
-  - The global store is implemented in `src/hooks/use-global-store.ts`.
+  - The favorites store is implemented in `src/hooks/use-favorite-store.ts`.
+- **nuqs**: Type-safe search params state manager for Next.js. It provides a simple and intuitive API for managing search params in Next.js applications.
+  - It was used to manage the search input value, this is the only place where the search params are used.
 
 ### Data Fetching and Management
 
@@ -64,8 +67,7 @@ bun run dev
 ## Testing
 
 ```
-bun run dev
-bun cy:run
+bun test:e2e
 ```
 
 ![Tests](./screenshots/tests.png)
