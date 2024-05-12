@@ -8,6 +8,7 @@ export function PokeballLoading() {
         width={20}
         height={20}
         alt="Pokeball loading"
+        priority
       />
     </div>
   );

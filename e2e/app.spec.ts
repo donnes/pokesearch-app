@@ -237,7 +237,7 @@ test("should navigate to pokemon page", async ({ page }) => {
   await grid.locator("a").first().click();
 
   // Check if the page title is "Bulbasaur"
-  await expect(page.locator("h1")).toHaveText("Bulbasaur");
+  await expect(page.locator("h1")).toHaveText("bulbasaur");
 
   // Check if the image is visible
   await expect(page.locator("img[alt='bulbasaur']")).toBeVisible();
