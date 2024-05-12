@@ -16,3 +16,9 @@ export function extractOffsetFromUrl(url: string | null) {
   const offset = new URL(url).searchParams.get("offset");
   return offset ? Number.parseInt(offset, 10) : undefined;
 }
+
+export function renderId(id: string) {
+  if (id.length === 1) return `#00${id}`;
+  if (id.length === 2) return `#0${id}`;
+  return `#${id}`;
+}
