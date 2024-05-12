@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
+import { toast } from "sonner";
 
 import type { NamedAPIResource } from "@/schemas/shared";
 import { useFavoriteStore } from "./use-favorite-store";
@@ -18,11 +19,17 @@ export function useToggleFavoriteMutation() {
       (pokemon) => pokemon.name === newPokemon.name
     );
 
+    const name =
+      newPokemon.name.charAt(0).toUpperCase() + newPokemon.name.slice(1);
+
     if (pokemon) {
-      return removeFavorite(newPokemon.name);
+      removeFavorite(newPokemon.name);
+      toast.success(`${name} removed from favorites`);
+      return;
     }
 
-    return saveFavorite(newPokemon);
+    saveFavorite(newPokemon);
+    toast.success(`${name} added to favorites`);
   }
 
   const mutation = useMutation({
@@ -32,6 +39,9 @@ export function useToggleFavoriteMutation() {
 
   React.useEffect(() => {
     if (mutation.isSuccess) {
+      void queryClient.invalidateQueries({
+        queryKey: [queryKeys.getFavorites],
+      });
       void queryClient.invalidateQueries({
         queryKey: [queryKeys.getFavorite, mutation.variables.name],
       });
