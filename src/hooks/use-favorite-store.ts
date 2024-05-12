@@ -18,7 +18,7 @@ export const useFavoriteStore = create<FavoriteState>()(
           (pokemon) => pokemon.name === newPokemon.name
         );
 
-        if (!pokemon) return;
+        if (pokemon) return;
 
         return set((state) => ({
           favorites: [newPokemon, ...state.favorites],
