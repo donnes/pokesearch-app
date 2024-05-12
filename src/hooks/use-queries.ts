@@ -30,7 +30,7 @@ export function useGetPokemonsQuery(search: string | null) {
 
     if (!search) {
       const { data } = await api.get<NamedAPIResourceList>(
-        `/pokemon/?limit=12&offset=${offset}`
+        `/pokemon/?limit=12&offset=${offset}`,
       );
       return data;
     }

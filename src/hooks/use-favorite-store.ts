@@ -15,7 +15,7 @@ export const useFavoriteStore = create<FavoriteState>()(
       favorites: [],
       saveFavorite(newPokemon) {
         const pokemon = get().favorites.find(
-          (pokemon) => pokemon.name === newPokemon.name
+          (pokemon) => pokemon.name === newPokemon.name,
         );
 
         if (pokemon) return;
@@ -32,6 +32,6 @@ export const useFavoriteStore = create<FavoriteState>()(
     }),
     {
       name: "favorites-storage",
-    }
-  )
+    },
+  ),
 );

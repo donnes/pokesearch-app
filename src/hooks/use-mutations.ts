@@ -16,7 +16,7 @@ export function useToggleFavoriteMutation() {
 
   async function mutationFn(newPokemon: NamedAPIResource) {
     const pokemon = favorites.find(
-      (pokemon) => pokemon.name === newPokemon.name
+      (pokemon) => pokemon.name === newPokemon.name,
     );
 
     const name =
