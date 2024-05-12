@@ -87,7 +87,7 @@ export default function PokemonPage() {
         <FavoriteButton pokemon={pokemon} />
       </div>
 
-      <div className="pt-12 flex items-center">
+      <div className="pt-4 flex items-center">
         <h1 className="font-bold text-4xl leading-tight">Bulbasaur</h1>
 
         <div className="flex items-center gap-x-2 pl-4">

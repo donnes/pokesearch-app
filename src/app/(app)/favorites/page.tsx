@@ -42,15 +42,19 @@ export default function FavoritesPage() {
         </Button>
       </div>
 
-      {!data || data.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {data.map((pokemon) => (
-            <PokemonListItem key={pokemon.name} pokemon={pokemon} />
-          ))}
-        </div>
-      )}
+      <div className="pt-4">
+        <h1 className="font-bold text-4xl leading-tight">Favorites</h1>
+
+        {!data || data.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {data.map((pokemon) => (
+              <PokemonListItem key={pokemon.name} pokemon={pokemon} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
