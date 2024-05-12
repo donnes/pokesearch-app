@@ -4,7 +4,9 @@ import axios, { type AxiosError } from "axios";
 
 import { extractOffsetFromUrl } from "@/lib/utils";
 import type { Pokemon } from "@/schemas/pokemon";
-import type { NamedAPIResourceList } from "@/schemas/shared";
+import type { NamedAPIResource, NamedAPIResourceList } from "@/schemas/shared";
+
+import { useFavoriteStore } from "./use-favorite-store";
 
 export const api = axios.create({
   baseURL: env.NEXT_PUBLIC_API_URL,
@@ -14,6 +16,8 @@ export const api = axios.create({
 export const queryKeys = {
   getPokemons: "get-pokemons",
   getPokemon: "get-pokemon",
+  getFavorites: "get-favorites",
+  getFavorite: "get-favorite",
 };
 
 export function useGetPokemonsQuery(search: string | null) {
@@ -55,7 +59,7 @@ export function useGetPokemonsQuery(search: string | null) {
   });
 }
 
-export function useGetPokemonQuery(id: number) {
+export function useGetPokemonQuery(id: string) {
   async function queryFn() {
     const { data } = await api.get<Pokemon>(`/pokemon/${id}/`);
     return data;
@@ -64,5 +68,24 @@ export function useGetPokemonQuery(id: number) {
   return useQuery({
     queryKey: [queryKeys.getPokemon, id],
     queryFn,
+  });
+}
+
+export function useGetFavoritesQuery() {
+  const { favorites } = useFavoriteStore();
+
+  return useQuery<Array<NamedAPIResource>>({
+    queryKey: [queryKeys.getFavorites],
+    queryFn: () => favorites,
+  });
+}
+
+export function useGetFavoriteQuery(name?: string) {
+  const { favorites } = useFavoriteStore();
+
+  return useQuery<NamedAPIResource | undefined>({
+    queryKey: [queryKeys.getFavorite, name],
+    queryFn: () => favorites.find((pokemon) => pokemon.name === name),
+    enabled: !!name,
   });
 }
