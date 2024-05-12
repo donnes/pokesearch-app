@@ -109,7 +109,7 @@ export default function PokemonPage() {
             width={200}
             height={200}
             quality={60}
-            alt="Pokémon"
+            alt={pokemon.name}
             className="object-cover w-72 min-h-60"
             priority
           />
