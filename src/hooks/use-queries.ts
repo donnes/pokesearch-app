@@ -55,7 +55,6 @@ export function useGetPokemonsQuery(search: string | null) {
     initialPageParam: 0,
     getPreviousPageParam: ({ previous }) => extractOffsetFromUrl(previous),
     getNextPageParam: ({ next }) => extractOffsetFromUrl(next),
-    retry: false,
   });
 }
 
@@ -65,7 +64,7 @@ export function useGetPokemonQuery(id: string) {
     return data;
   }
 
-  return useQuery({
+  return useQuery<Pokemon, AxiosError>({
     queryKey: [queryKeys.getPokemon, id],
     queryFn,
   });
