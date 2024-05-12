@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test:e2e": "playwright test",
     "lint": "biome lint ./src",
     "lint:fix": "biome lint --apply ./src",
     "format": "biome format ./src",
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
+    "@playwright/test": "^1.44.0",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@types/node": "^20",
     "@types/react": "^18",
