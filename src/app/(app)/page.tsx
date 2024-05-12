@@ -38,7 +38,7 @@ function SearchError() {
   );
 }
 
-export default function Home() {
+export default function HomePage() {
   const [search] = useQueryState("search");
   const debouncedSearch = useDebounce(search, 300);
   const { ref: endRef, inView: isEndReached } = useInView();
@@ -54,8 +54,14 @@ export default function Home() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <Image src="/logo.png" width={204.8} height={63.8} alt="PokeSearch" />
+      <div className="flex h-16 items-center justify-between">
+        <Image
+          src="/logo.png"
+          width={204.8}
+          height={63.8}
+          alt="PokeSearch"
+          priority
+        />
 
         <Button variant="ghost">
           <Star className="w-5 h-5 mr-2 text-yellow-400 fill-yellow-400" />
@@ -65,11 +71,8 @@ export default function Home() {
 
       <SearchBar />
 
-      {isError && error.response?.status === 404 ? (
-        <SearchNotFound />
-      ) : (
-        isError && <SearchError />
-      )}
+      {isError && error.response?.status === 404 && <SearchNotFound />}
+      {isError && error.response?.status !== 404 && <SearchError />}
 
       {!isLoading && !isError && data && (
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
