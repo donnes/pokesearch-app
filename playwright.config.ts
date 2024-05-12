@@ -40,6 +40,8 @@ export default defineConfig({
     // contextOptions: {
     //   ignoreHTTPSErrors: true,
     // },
+
+    // headless: false,
   },
 
   projects: [
@@ -68,9 +70,9 @@ export default defineConfig({
         ...devices["Pixel 5"],
       },
     },
-    {
-      name: "Mobile Safari",
-      use: devices["iPhone 12"],
-    },
+    // {
+    //   name: "Mobile Safari",
+    //   use: devices["iPhone 12"],
+    // },
   ],
 });
