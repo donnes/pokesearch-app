@@ -160,9 +160,11 @@ export default function PokemonPage() {
 
                       <Progress
                         value={(base_stat / 300) * 100}
-                        max={100}
                         variant={stat.name as keyof ProgressProps["variant"]}
                       />
+                      <div className="flex justify-end pt-0.5 pr-2 text-xs text-zinc-400">
+                        Max: {300}
+                      </div>
                     </div>
                   );
                 })}
