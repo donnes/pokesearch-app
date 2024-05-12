@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useGetPokemonsQuery } from "@/hooks/use-queries";
 import { useDebounce } from "@uidotdev/usehooks";
 
-function SearchNotFound() {
+function SearchNotFoundState() {
   return (
     <div className="flex flex-col items-center justify-center mt-8 gap-y-4">
       <Image
@@ -30,7 +30,7 @@ function SearchNotFound() {
   );
 }
 
-function SearchError() {
+function SearchErrorState() {
   return (
     <p className="text-zinc-400 py-8 text-center">
       An error occurred while fetching the data. Please try again later.
@@ -71,8 +71,8 @@ export default function HomePage() {
 
       <SearchBar />
 
-      {isError && error.response?.status === 404 && <SearchNotFound />}
-      {isError && error.response?.status !== 404 && <SearchError />}
+      {isError && error.response?.status === 404 && <SearchNotFoundState />}
+      {isError && error.response?.status !== 404 && <SearchErrorState />}
 
       {!isLoading && !isError && data && (
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
