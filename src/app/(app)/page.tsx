@@ -7,6 +7,7 @@ import { useQueryState } from "nuqs";
 import * as React from "react";
 import { useInView } from "react-intersection-observer";
 
+import { Logo } from "@/components/composed/logo";
 import { PokeballLoading } from "@/components/composed/pokeball-loading";
 import { PokemonListItem } from "@/components/composed/pokemon-list-item";
 import { SearchBar } from "@/components/composed/search-bar";
@@ -56,13 +57,7 @@ export default function HomePage() {
   return (
     <div>
       <div className="flex h-16 items-center justify-between">
-        <Image
-          src="/logo.png"
-          width={204.8}
-          height={63.8}
-          alt="PokeSearch"
-          priority
-        />
+        <Logo className="w-44" />
 
         <Button variant="ghost" asChild>
           <Link href="/favorites">
