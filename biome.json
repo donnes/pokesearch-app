@@ -17,6 +17,7 @@
   },
   "formatter": {
     "ignore": [],
-    "indentStyle": "space"
+    "indentStyle": "space",
+    "lineEnding": "lf"
   }
 }
