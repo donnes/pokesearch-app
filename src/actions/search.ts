@@ -30,14 +30,15 @@ export async function searchAction(params: z.infer<typeof searchSchema>) {
     return response;
   }
 
+  const term = query.toLowerCase();
   const names: string[] = [];
-  const rank = await redis.zrank(REDIS_TABLE, query);
+  const rank = await redis.zrank(REDIS_TABLE, term);
 
   if (rank) {
     const members = await redis.zrange<string[]>(REDIS_TABLE, rank, rank + 150);
 
     for (const member of members) {
-      if (!member.startsWith(query)) {
+      if (!member.startsWith(term)) {
         break;
       }
 
