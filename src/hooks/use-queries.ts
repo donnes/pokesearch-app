@@ -9,7 +9,7 @@ import type { NamedAPIResource, NamedAPIResourceList } from "@/schemas/shared";
 import { useFavoriteStore } from "./use-favorite-store";
 
 export const api = axios.create({
-  baseURL: env.NEXT_PUBLIC_API_URL,
+  baseURL: env.NEXT_PUBLIC_POKEAPI_BASE_URL,
   timeout: 10000,
 });
 
@@ -43,7 +43,7 @@ export function useGetPokemonsQuery(search: string | null) {
       results: [
         {
           name: data.name,
-          url: `${env.NEXT_PUBLIC_API_URL}/pokemon/${data.id}/`,
+          url: `${env.NEXT_PUBLIC_POKEAPI_BASE_URL}/pokemon/${data.id}/`,
         },
       ],
     };
