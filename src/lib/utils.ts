@@ -22,3 +22,7 @@ export function renderId(id: string) {
   if (id.length === 2) return `#0${id}`;
   return `#${id}`;
 }
+
+export function normalizePokemonName(name: string) {
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
