@@ -2,13 +2,38 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
 import { toast } from "sonner";
 
+import { signInWithOtpAction } from "@/actions/signin-with-otp";
+import { verifyOtpAction } from "@/actions/verify-otp";
 import type { NamedAPIResource } from "@/schemas/shared";
+
 import { useFavoriteStore } from "./use-favorite-store";
 import { queryKeys } from "./use-queries";
 
 export const mutationKeys = {
+  signIn: "sign-in",
+  verifyOtp: "verify-otp",
   toggleFavorite: "toggle-favorite",
 };
+
+export function useSignInWithOtpMutation() {
+  return useMutation({
+    mutationKey: [mutationKeys.signIn],
+    mutationFn: signInWithOtpAction,
+    onSuccess: () => {
+      toast.success("Verification code sent to your email");
+    },
+  });
+}
+
+export function useVerifyOtpMutation() {
+  return useMutation({
+    mutationKey: [mutationKeys.verifyOtp],
+    mutationFn: verifyOtpAction,
+    onSuccess: () => {
+      toast.success("Signed in successfully");
+    },
+  });
+}
 
 export function useToggleFavoriteMutation() {
   const { favorites, saveFavorite, removeFavorite } = useFavoriteStore();
