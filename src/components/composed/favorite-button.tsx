@@ -1,3 +1,5 @@
+"use client";
+
 import { StarIcon, StarOffIcon } from "lucide-react";
 import type { NamedAPIResource } from "pokenode-ts";
 import * as React from "react";
