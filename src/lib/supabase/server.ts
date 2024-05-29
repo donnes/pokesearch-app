@@ -1,7 +1,8 @@
 import { env } from "@/env.mjs";
-import type { Database } from "@/types/db";
 import { type CookieOptions, createServerClient } from "@supabase/ssr";
 import { cookies, headers } from "next/headers";
+
+import type { Database } from "@/types/db";
 
 type CreateClientOptions = {
   admin?: boolean;
