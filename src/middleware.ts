@@ -11,7 +11,12 @@ export async function middleware(request: NextRequest) {
 
   // Not authenticated
   if (!data.user && !nextUrl.pathname.includes("/signin")) {
-    return NextResponse.redirect(new URL("/signin", request.url));
+    return NextResponse.next();
+  }
+
+  // Authenticated
+  if (data.user && nextUrl.pathname.includes("/signin")) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return response;
