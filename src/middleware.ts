@@ -1,9 +1,20 @@
 import { updateSession } from "@/lib/supabase/middleware";
-import type { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { createClient } from "./lib/supabase/server";
 
-export async function middleware(request: NextRequest, response: NextResponse) {
-  // update user's auth session
-  return await updateSession(request, response);
+export async function middleware(request: NextRequest) {
+  const response = await updateSession(request);
+  const supabase = createClient();
+  const nextUrl = request.nextUrl;
+
+  const { data } = await supabase.auth.getUser();
+
+  // Not authenticated
+  if (!data.user && !nextUrl.pathname.includes("/signin")) {
+    return NextResponse.redirect(new URL("/signin", request.url));
+  }
+
+  return response;
 }
 
 export const config = {
