@@ -2,16 +2,18 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { signInWithOtpAction } from "@/actions/signin-with-otp";
+import { signInWithOtpAction } from "@/actions/sign-in-with-otp";
 import { verifyOtpAction } from "@/actions/verify-otp";
 import type { NamedAPIResource } from "@/schemas/shared";
 
+import { signOutAction } from "@/actions/sign-out";
 import { useFavoriteStore } from "./use-favorite-store";
 import { queryKeys } from "./use-queries";
 
 export const mutationKeys = {
   signIn: "sign-in",
   verifyOtp: "verify-otp",
+  signOut: "sign-out",
   toggleFavorite: "toggle-favorite",
 };
 
@@ -31,6 +33,16 @@ export function useVerifyOtpMutation() {
     mutationFn: verifyOtpAction,
     onSuccess: () => {
       toast.success("Signed in successfully");
+    },
+  });
+}
+
+export function useSignOutMutation() {
+  return useMutation({
+    mutationKey: [mutationKeys.signOut],
+    mutationFn: signOutAction,
+    onSuccess: () => {
+      toast.success("Signed out successfully");
     },
   });
 }
