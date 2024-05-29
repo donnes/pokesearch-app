@@ -1,56 +1,43 @@
 import { env } from "@/env.mjs";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import axios, { type AxiosError } from "axios";
+import type { NamedAPIResource, Pokemon } from "pokenode-ts";
+import type { z } from "zod";
 
+import { searchAction } from "@/actions/search";
 import { extractOffsetFromUrl } from "@/lib/utils";
-import type { Pokemon } from "@/schemas/pokemon";
-import type { NamedAPIResource, NamedAPIResourceList } from "@/schemas/shared";
+import type { searchSchema } from "@/schemas/search";
 
 import { useFavoriteStore } from "./use-favorite-store";
-
 export const api = axios.create({
   baseURL: env.NEXT_PUBLIC_POKEAPI_BASE_URL,
   timeout: 10000,
 });
 
 export const queryKeys = {
+  searcg: "search",
   getPokemons: "get-pokemons",
   getPokemon: "get-pokemon",
   getFavorites: "get-favorites",
   getFavorite: "get-favorite",
 };
 
-export function useGetPokemonsQuery(search: string | null) {
+export function useSearchQuery(params: z.infer<typeof searchSchema>) {
   async function queryFn({
     pageParam,
   }: {
     pageParam: unknown;
-  }): Promise<NamedAPIResourceList> {
+  }) {
     const offset = typeof pageParam === "number" ? pageParam : 0;
-
-    if (!search) {
-      const { data } = await api.get<NamedAPIResourceList>(
-        `/pokemon/?limit=12&offset=${offset}`,
-      );
-      return data;
-    }
-
-    const { data } = await api.get<Pokemon>(`/pokemon/${search.toLowerCase()}`);
-    return {
-      count: 1,
-      next: null,
-      previous: null,
-      results: [
-        {
-          name: data.name,
-          url: `${env.NEXT_PUBLIC_POKEAPI_BASE_URL}/pokemon/${data.id}/`,
-        },
-      ],
-    };
+    return searchAction({
+      query: params.query,
+      limit: params.limit ?? 24,
+      offset,
+    });
   }
 
-  return useInfiniteQuery<NamedAPIResourceList, AxiosError>({
-    queryKey: [queryKeys.getPokemons, search],
+  return useInfiniteQuery({
+    queryKey: [queryKeys.getPokemons, params.query],
     queryFn,
     initialPageParam: 0,
     getPreviousPageParam: ({ previous }) => extractOffsetFromUrl(previous),

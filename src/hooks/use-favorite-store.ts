@@ -1,7 +1,6 @@
+import type { NamedAPIResource } from "pokenode-ts";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-import type { NamedAPIResource } from "@/schemas/shared";
 
 interface FavoriteState {
   favorites: Array<NamedAPIResource>;

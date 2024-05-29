@@ -1,11 +1,11 @@
 import { StarIcon, StarOffIcon } from "lucide-react";
+import type { NamedAPIResource } from "pokenode-ts";
 import * as React from "react";
 
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { useToggleFavoriteMutation } from "@/hooks/use-mutations";
 import { useGetFavoriteQuery } from "@/hooks/use-queries";
 import { cn } from "@/lib/utils";
-import type { NamedAPIResource } from "@/schemas/shared";
 
 interface FavoriteButtonProps extends ButtonProps {
   pokemon: NamedAPIResource;
