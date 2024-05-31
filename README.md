@@ -2,7 +2,7 @@
 
 PokeSearch is a web application that allows users to search for Pokemons and their related information.
 
-## [Demo link](https://pokesearch-react-app.vercel.app/)
+## [Demo link](https://pokesearch-app.vercel.app/)
 
 |                                                      |                                                    |
 | :--------------------------------------------------: | -------------------------------------------------- |
@@ -10,14 +10,17 @@ PokeSearch is a web application that allows users to search for Pokemons and the
 
 ## Tech choices
 
-- [Next.js](https://nextjs.org/)
+- [Next.js 14](https://nextjs.org/)
 - [TanStack Query](https://tanstack.com/query/latest/)
-- [Zustand](https://github.com/pmndrs/zustand)
-- [Shadcn UI](https://ui.shadcn.com)
-- [Zod](https://zod.dev)
+- [Supabase](https://supabase.com/)
+- [Upstash Redis](https://upstash.com/redis/)
+- [Radix UI](https://www.radix-ui.com/)
+- [Shadcn UI](https://ui.shadcn.com/)
+- [Zod](https://zod.dev/)
 - [nuqs](https://github.com/47ng/nuqs/)
 - [TailwindCSS](https://tailwindcss.com/)
 - [Playwright](https://playwright.dev/)
+- [Biome](https://biomejs.dev/)
 - [Bun](https://bun.sh/)
 
 ## Architecture Overview
@@ -31,16 +34,21 @@ To be as close as possible to a real-world application, I have made architectura
 
 ### State Management
 
-- **Zustand**: Utilized for global state management. Zustand offers a straightforward setup compared to Redux, making it the ideal choice. The primary use case in this project is to manage favorites, with the added functionality of persisting these favorites in `localStorage`.
-  - The favorites store is implemented in `src/hooks/use-favorite-store.ts`.
 - **nuqs**: Type-safe search params state manager for Next.js. It provides a simple and intuitive API for managing search params in Next.js applications.
   - It was used to manage the search input value, this is the only place where the search params are used.
 
-### Data Fetching and Management
+### Database and Cache Management
+
+- **Supabase**: Supabase is a cloud-based Firebase alternative that provides a fully-managed database, authentication, and storage services.
+  - Used for authentication, and save favorites.
+- **Upstash Redis**: Upstash Redis is a Redis cloud service that provides a fully-managed Redis instance with high availability and performance.
+  - Used during search to partially match the search term with the pokemon names.
+
+### Data Fetching
 
 - **TanStack Query**: Used for API data fetching management, caching and mutations.
 - **API Interactions**: TanStack Query is also used to perform mutations in the Zustand store.\
-  I like to keep queries and mutations in a two separate files, for me it enhances maintainability.
+  I like to keep queries and mutations only in two separate files, for me it enhances maintainability.
   - Queries: `src/hooks/use-queries.ts`
   - Mutations: `src/hooks/use-mutations.ts`
 

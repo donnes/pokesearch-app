@@ -64,13 +64,13 @@ export function useToggleFavoriteMutation() {
     const name = normalizePokemonName(pokemon.name);
 
     if (pokemon.isFavorite) {
-      toast.success(`${name} removed from favorites`);
       await removeFavoriteAction(id);
+      toast.success(`${name} removed from favorites`);
       return;
     }
 
-    toast.success(`${name} added to favorites`);
     await addFavoriteAction({ pokemonId: id, pokemonName: pokemon.name });
+    toast.success(`${name} added to favorites`);
   }
 
   return useMutation({
