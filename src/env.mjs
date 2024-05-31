@@ -14,9 +14,6 @@ export const env = createEnv({
    * built with invalid env vars.
    */
   server: {
-    // Supabase
-    SUPABASE_SERVICE_KEY: z.string(),
-
     // Upstash Redis
     UPSTASH_REDIS_REST_URL: z.string(),
     UPSTASH_REDIS_REST_TOKEN: z.string(),
@@ -37,9 +34,6 @@ export const env = createEnv({
     // Vercel
     VERCEL_URL: process.env.VERCEL_URL,
     PORT: process.env.PORT,
-
-    // PokeAPI
-    NEXT_PUBLIC_POKEAPI_BASE_URL: process.env.NEXT_PUBLIC_POKEAPI_BASE_URL,
 
     // Supabase
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
