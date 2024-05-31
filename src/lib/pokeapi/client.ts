@@ -1,3 +1,3 @@
 import { PokemonClient } from "pokenode-ts";
 
-export const createClient = () => new PokemonClient();
+export const pokeApi = new PokemonClient();

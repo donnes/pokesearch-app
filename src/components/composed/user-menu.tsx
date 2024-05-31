@@ -1,6 +1,8 @@
+import { User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { getUser } from "@/@server/queries/get-user";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -12,30 +14,26 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getUser } from "@/lib/supabase/cached-queries";
 
-import { User } from "lucide-react";
 import { SignOut } from "./sign-out";
 
 export async function UserMenu() {
-  const user = await getUser();
+  const { data: user } = await getUser();
 
-  if (!user || !user.data) return null;
+  if (!user) return null;
 
-  const userData = user.data;
-
-  const avatarFallback = userData?.full_name
-    ? userData.full_name.charAt(0)
-    : userData.email.charAt(0);
+  const avatarFallback = user?.full_name
+    ? user.full_name.charAt(0)
+    : user.email.charAt(0);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="rounded-full w-8 h-8 cursor-pointer">
-          {userData?.avatar_url && (
+          {user?.avatar_url && (
             <Image
-              src={userData.avatar_url}
-              alt={userData?.full_name ?? userData.email}
+              src={user.avatar_url}
+              alt={user?.full_name ?? user.email}
               width={32}
               height={32}
             />
@@ -48,11 +46,11 @@ export async function UserMenu() {
       <DropdownMenuContent className="w-[240px]" sideOffset={10} align="end">
         <DropdownMenuLabel>
           <div className="flex flex-col">
-            {userData?.full_name && (
-              <span className="truncate">{userData.full_name}</span>
+            {user?.full_name && (
+              <span className="truncate">{user.full_name}</span>
             )}
             <span className="truncate text-xs text-zinc-400 font-normal">
-              {userData.email}
+              {user.email}
             </span>
           </div>
         </DropdownMenuLabel>

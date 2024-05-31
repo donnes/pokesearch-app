@@ -4,16 +4,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import * as React from "react";
 
+import { getIsFavorite } from "@/@server/queries/get-is-favorite";
 import { FavoriteButton } from "@/components/composed/favorite-button";
 import { StatsIcon } from "@/components/composed/stats-icon";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress, type ProgressProps } from "@/components/ui/progress";
-import { getPokemon } from "@/lib/pokeapi/queries";
+import { pokeApi } from "@/lib/pokeapi/client";
 import { cn, normalizePokemonName } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
-  const pokemon = await getPokemon(Number.parseInt(params.id, 10));
+  const pokemon = await pokeApi.getPokemonById(Number.parseInt(params.id));
   const name = normalizePokemonName(pokemon.name);
 
   return {
@@ -22,14 +23,19 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function PokemonPage({
   params,
 }: { params: { id: string } }) {
-  const pokemon = await getPokemon(Number.parseInt(params.id, 10));
+  const pokemon = await pokeApi.getPokemonById(Number.parseInt(params.id, 10));
 
   if (!pokemon) {
     return notFound();
   }
+
+  const isFavorite = await getIsFavorite(pokemon.id);
 
   return (
     <div>
@@ -45,6 +51,7 @@ export default async function PokemonPage({
           pokemon={{
             name: pokemon.name,
             url: `/pokemon/${pokemon.id}/`,
+            isFavorite,
           }}
         />
       </div>

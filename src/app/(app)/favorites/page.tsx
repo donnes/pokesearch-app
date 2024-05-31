@@ -1,11 +1,10 @@
-"use client";
 import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { getFavorites } from "@/@server/queries/get-favorites";
 import { PokemonListItem } from "@/components/composed/pokemon-list-item";
 import { Button } from "@/components/ui/button";
-import { useGetFavoritesQuery } from "@/hooks/use-queries";
 
 function EmptyState() {
   return (
@@ -16,6 +15,7 @@ function EmptyState() {
         width={430}
         height={463}
         alt="No favorites"
+        priority
       />
       <p className="font-medium text-zinc-400">No favorites yet, add some!</p>
 
@@ -28,8 +28,11 @@ function EmptyState() {
   );
 }
 
-export default function FavoritesPage() {
-  const { data } = useGetFavoritesQuery();
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function FavoritesPage() {
+  const { data: favorites } = await getFavorites();
 
   return (
     <div>
@@ -45,12 +48,19 @@ export default function FavoritesPage() {
       <div className="pt-4">
         <h1 className="font-bold text-4xl leading-tight">Favorites</h1>
 
-        {!data || data.length === 0 ? (
+        {!favorites || !favorites.length ? (
           <EmptyState />
         ) : (
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {data.map((pokemon) => (
-              <PokemonListItem key={pokemon.name} pokemon={pokemon} />
+            {favorites.map((favorite) => (
+              <PokemonListItem
+                key={favorite.id}
+                pokemon={{
+                  name: favorite.pokemon_name,
+                  url: `/pokemon/${favorite.pokemon_id}/`,
+                  isFavorite: true,
+                }}
+              />
             ))}
           </div>
         )}

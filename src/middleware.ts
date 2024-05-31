@@ -2,7 +2,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 import { type NextRequest, NextResponse } from "next/server";
 import { createClient } from "./lib/supabase/server";
 
-const publicRoutes = ["/", "/signin"];
+const publicRoutes = ["/", "/pokemon/[id]", "/signin"];
 
 export async function middleware(request: NextRequest) {
   const response = await updateSession(request);
@@ -14,22 +14,21 @@ export async function middleware(request: NextRequest) {
   const { data } = await supabase.auth.getUser();
 
   // Not authenticated, public routes
-  if (!data.user && publicRoutes.includes(nextUrl.pathname)) {
+  if (
+    !data.user &&
+    publicRoutes.some((route) => nextUrl.pathname.startsWith(route))
+  ) {
     return NextResponse.next();
   }
 
   // Not authenticated, private routes
   if (!data.user) {
-    const encodedSearchParams = `${url.pathname.substring(1)}${url.search}`;
-    const newUrl = new URL("/signin", url);
-    newUrl.searchParams.append("return_to", encodedSearchParams);
-
-    return NextResponse.redirect(newUrl);
+    return NextResponse.redirect(new URL("/signin", url));
   }
 
   // Authenticated
   if (data.user && nextUrl.pathname.includes("/signin")) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/", url));
   }
 
   return response;

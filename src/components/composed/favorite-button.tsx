@@ -6,7 +6,6 @@ import * as React from "react";
 
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { useToggleFavoriteMutation } from "@/hooks/use-mutations";
-import { useGetFavoriteQuery } from "@/hooks/use-queries";
 import { cn } from "@/lib/utils";
 
 interface FavoriteButtonProps extends ButtonProps {
@@ -20,7 +19,6 @@ export function FavoriteButton({
   className,
   ...props
 }: FavoriteButtonProps) {
-  const { data: favorite } = useGetFavoriteQuery(pokemon.name);
   const { mutate } = useToggleFavoriteMutation();
 
   const onClick = React.useCallback(
@@ -38,7 +36,7 @@ export function FavoriteButton({
       className={cn(
         "group/favorite gap-x-2",
         {
-          "text-yellow-400": !!favorite,
+          "text-yellow-400": pokemon.isFavorite,
         },
         className,
       )}
@@ -47,12 +45,12 @@ export function FavoriteButton({
     >
       <StarIcon
         className={cn("w-5 h-5", {
-          "fill-yellow-400 group-hover/favorite:hidden": !!favorite,
+          "fill-yellow-400 group-hover/favorite:hidden": pokemon.isFavorite,
         })}
       />
       <StarOffIcon
         className={cn("hidden w-5 h-5 fill-yellow-400", {
-          "group-hover/favorite:inline-flex": !!favorite,
+          "group-hover/favorite:inline-flex": pokemon.isFavorite,
         })}
       />
       {showLabel && "Favorite"}
