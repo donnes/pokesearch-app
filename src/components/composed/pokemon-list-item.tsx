@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import * as React from "react";
+import type { NamedAPIResource } from "pokenode-ts";
 
 import { extractIdFromUrl, renderId } from "@/lib/utils";
-import type { NamedAPIResource } from "@/schemas/shared";
 
 import { FavoriteButton } from "./favorite-button";
 

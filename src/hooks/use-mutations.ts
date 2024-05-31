@@ -1,52 +1,117 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import * as React from "react";
+import {
+  type InfiniteData,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import type { NamedAPIResource, NamedAPIResourceList } from "pokenode-ts";
 import { toast } from "sonner";
 
-import type { NamedAPIResource } from "@/schemas/shared";
-import { useFavoriteStore } from "./use-favorite-store";
+import {
+  signInWithOtpAction,
+  signOutAction,
+  verifyOtpAction,
+} from "@/@server/actions/auth";
+
+import { addFavoriteAction } from "@/@server/actions/add-favorite";
+import { removeFavoriteAction } from "@/@server/actions/remove-favorite";
+import { extractIdFromUrl, normalizePokemonName } from "@/lib/utils";
+import { useQueryState } from "nuqs";
 import { queryKeys } from "./use-queries";
 
 export const mutationKeys = {
+  signIn: "sign-in",
+  verifyOtp: "verify-otp",
+  signOut: "sign-out",
   toggleFavorite: "toggle-favorite",
 };
 
+export function useSignInWithOtpMutation() {
+  return useMutation({
+    mutationKey: [mutationKeys.signIn],
+    mutationFn: signInWithOtpAction,
+    onSuccess: () => {
+      toast.success("Verification code sent to your email");
+    },
+  });
+}
+
+export function useVerifyOtpMutation() {
+  return useMutation({
+    mutationKey: [mutationKeys.verifyOtp],
+    mutationFn: verifyOtpAction,
+    onSuccess: () => {
+      toast.success("Signed in successfully");
+    },
+  });
+}
+
+export function useSignOutMutation() {
+  return useMutation({
+    mutationKey: [mutationKeys.signOut],
+    mutationFn: signOutAction,
+    onSuccess: () => {
+      toast.success("Signed out successfully");
+    },
+  });
+}
+
 export function useToggleFavoriteMutation() {
-  const { favorites, saveFavorite, removeFavorite } = useFavoriteStore();
   const queryClient = useQueryClient();
+  const [search] = useQueryState("search");
 
-  async function mutationFn(newPokemon: NamedAPIResource) {
-    const pokemon = favorites.find(
-      (pokemon) => pokemon.name === newPokemon.name,
-    );
+  async function mutationFn(pokemon: NamedAPIResource) {
+    const id = extractIdFromUrl(pokemon.url);
+    const name = normalizePokemonName(pokemon.name);
 
-    const name =
-      newPokemon.name.charAt(0).toUpperCase() + newPokemon.name.slice(1);
-
-    if (pokemon) {
-      removeFavorite(newPokemon.name);
+    if (pokemon.isFavorite) {
+      await removeFavoriteAction(id);
       toast.success(`${name} removed from favorites`);
       return;
     }
 
-    saveFavorite(newPokemon);
+    await addFavoriteAction({ pokemonId: id, pokemonName: pokemon.name });
     toast.success(`${name} added to favorites`);
   }
 
-  const mutation = useMutation({
+  return useMutation({
     mutationKey: [mutationKeys.toggleFavorite],
     mutationFn,
+    async onMutate(newResource) {
+      await queryClient.cancelQueries({
+        queryKey: [queryKeys.getSearch, search],
+      });
+
+      const previousSearchResults = queryClient.getQueryData<
+        InfiniteData<NamedAPIResourceList>
+      >([queryKeys.getSearch, search]);
+
+      queryClient.setQueryData<InfiniteData<NamedAPIResourceList>>(
+        [queryKeys.getSearch, search],
+        (oldData) => {
+          console.log(oldData);
+          if (!oldData) return oldData;
+
+          const newPages = oldData.pages.map((page) => ({
+            ...page,
+            results: page.results.map((resource) =>
+              resource.name === newResource.name
+                ? { ...resource, isFavorite: !resource.isFavorite }
+                : resource,
+            ),
+          }));
+
+          return { ...oldData, pages: newPages };
+        },
+      );
+
+      return { previousSearchResults };
+    },
+    onError(_, __, context) {
+      if (!context) return;
+      queryClient.setQueryData<InfiniteData<NamedAPIResourceList>>(
+        [queryKeys.getSearch, search],
+        context.previousSearchResults,
+      );
+    },
   });
-
-  React.useEffect(() => {
-    if (mutation.isSuccess) {
-      void queryClient.invalidateQueries({
-        queryKey: [queryKeys.getFavorites],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: [queryKeys.getFavorite, mutation.variables.name],
-      });
-    }
-  }, [mutation, queryClient]);
-
-  return mutation;
 }

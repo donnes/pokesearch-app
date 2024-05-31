@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 const client = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: false,
+      staleTime: 60 * 1000,
     },
   },
 });

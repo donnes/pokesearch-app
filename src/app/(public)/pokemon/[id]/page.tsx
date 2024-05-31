@@ -1,36 +1,41 @@
-"use client";
-
 import { ChevronLeft, RulerIcon, WeightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
+import { notFound } from "next/navigation";
 import * as React from "react";
 
+import { getIsFavorite } from "@/@server/queries/get-is-favorite";
 import { FavoriteButton } from "@/components/composed/favorite-button";
-import { PokeballLoading } from "@/components/composed/pokeball-loading";
 import { StatsIcon } from "@/components/composed/stats-icon";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress, type ProgressProps } from "@/components/ui/progress";
-import { useGetPokemonQuery } from "@/hooks/use-queries";
-import { cn } from "@/lib/utils";
+import { pokeApi } from "@/lib/pokeapi/client";
+import { cn, normalizePokemonName } from "@/lib/utils";
 
-export default function PokemonPage() {
-  const { id } = useParams<{ id: string }>();
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const pokemon = await pokeApi.getPokemonById(Number.parseInt(params.id));
+  const name = normalizePokemonName(pokemon.name);
 
-  const { data: pokemon, error, isLoading, isError } = useGetPokemonQuery(id);
+  return {
+    title: `${name} | PokeSearch`,
+    description: `${name} is a Pokémon from the Pokémon franchise.`,
+  };
+}
 
-  if (isError && error.response?.status === 404) {
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function PokemonPage({
+  params,
+}: { params: { id: string } }) {
+  const pokemon = await pokeApi.getPokemonById(Number.parseInt(params.id, 10));
+
+  if (!pokemon) {
     return notFound();
   }
 
-  if (isLoading || !pokemon) {
-    return (
-      <div className="flex py-6 items-center justify-center">
-        <PokeballLoading />
-      </div>
-    );
-  }
+  const isFavorite = await getIsFavorite(pokemon.id);
 
   return (
     <div>
@@ -46,6 +51,7 @@ export default function PokemonPage() {
           pokemon={{
             name: pokemon.name,
             url: `/pokemon/${pokemon.id}/`,
+            isFavorite,
           }}
         />
       </div>
@@ -70,7 +76,7 @@ export default function PokemonPage() {
       <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 pt-10">
         <div>
           <Image
-            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`}
+            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${params.id}.png`}
             width={200}
             height={200}
             quality={60}

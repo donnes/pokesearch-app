@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function extractIdFromUrl(url: string) {
   const parts = url.split("/");
-  return parts[parts.length - 2];
+  return Number.parseInt(parts[parts.length - 2], 10);
 }
 
 export function extractOffsetFromUrl(url: string | null) {
@@ -17,8 +17,13 @@ export function extractOffsetFromUrl(url: string | null) {
   return offset ? Number.parseInt(offset, 10) : undefined;
 }
 
-export function renderId(id: string) {
-  if (id.length === 1) return `#00${id}`;
-  if (id.length === 2) return `#0${id}`;
+export function renderId(id: number) {
+  const idString = id.toString();
+  if (idString.length === 1) return `#00${id}`;
+  if (idString.length === 2) return `#0${id}`;
   return `#${id}`;
+}
+
+export function normalizePokemonName(name: string) {
+  return name.charAt(0).toUpperCase() + name.slice(1);
 }
