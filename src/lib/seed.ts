@@ -1,13 +1,11 @@
 import { redis } from "@/lib/upstash/redis";
 import type { ScoreMember } from "@upstash/redis";
 
-import { createClient } from "./pokeapi/client";
-
-const api = createClient();
+import { pokeApi } from "./pokeapi/client";
 
 async function seedSearchTerms() {
   try {
-    const pokemonsData = await api.listPokemons(0, 1500);
+    const pokemonsData = await pokeApi.listPokemons(0, 1500);
     const pokemonsName = pokemonsData.results.map((pokemon) => pokemon.name);
     const terms: ScoreMember<string>[] = [];
 
