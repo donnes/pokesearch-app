@@ -26,9 +26,6 @@ export const env = createEnv({
    * For them to be exposed to the client, prefix them with `NEXT_PUBLIC_`.
    */
   client: {
-    // PokeAPI
-    NEXT_PUBLIC_POKEAPI_BASE_URL: z.string(),
-
     // Supabase
     NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
@@ -47,7 +44,6 @@ export const env = createEnv({
     // Supabase
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    SUPABASE_SERVICE_KEY: process.env.SUPABASE_SERVICE_KEY,
 
     // Upstash Redis
     UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
