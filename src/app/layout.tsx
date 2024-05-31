@@ -10,7 +10,7 @@ import { Providers } from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PokeSearch",
+  title: "PokeSearch | Next.js app",
   description:
     "PokeSearch is a web application that allows users to search for Pokemons and their related information",
 };
