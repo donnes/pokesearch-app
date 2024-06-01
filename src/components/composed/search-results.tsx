@@ -28,20 +28,31 @@ function SearchNotFoundState() {
   );
 }
 
+function SearchErrorState() {
+  return (
+    <p className="text-zinc-400 py-8 text-center">
+      An error occurred while fetching the data. Please try again later.
+    </p>
+  );
+}
+
 export function SearchResults() {
   const [search] = useQueryState("search");
   const debouncedSearch = useDebounce(search, 300);
   const { ref: endRef, inView: isEndReached } = useInView();
 
-  const { data, isLoading, isFetchingNextPage, fetchNextPage } = useSearchQuery(
-    { query: debouncedSearch },
-  );
+  const { data, isError, isLoading, isFetchingNextPage, fetchNextPage } =
+    useSearchQuery({ query: debouncedSearch });
 
   React.useEffect(() => {
     if (isEndReached) {
       fetchNextPage();
     }
   }, [isEndReached, fetchNextPage]);
+
+  if (isError) {
+    return <SearchErrorState />;
+  }
 
   if (data?.pages.length === 0 || data?.pages?.[0].count === 0) {
     return <SearchNotFoundState />;
